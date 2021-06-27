@@ -75,7 +75,53 @@ namespace ConsoleApp1
             //var ts = new testCases().GetBribeTestCases();
             //minimumBribes(ts);
 
+            var ts = new testCases().GetRansomTestCases();
+            checkMagazine(ts.Item1, ts.Item2);
+
             Console.Read();
+        }
+
+        public static void checkMagazine(List<string> magazine, List<string> note)
+        {
+            var groupedNote = note.GroupBy(x => x);
+            var groupedMag = magazine.GroupBy(x => x);
+
+            foreach (var noteWordGrp in groupedNote)
+            {
+                var magWordgrp = groupedMag.FirstOrDefault(x => x.Key == noteWordGrp.Key);
+                if (magWordgrp == null || magWordgrp.Count() < noteWordGrp.Count())
+                {
+                    Console.WriteLine("No");
+                    return;
+                }
+            }
+            Console.WriteLine("Yes");
+        }
+
+        public static void checkMagazineWithoutCounters(List<string> magazine, List<string> note)
+        {
+            note.Sort();
+            magazine.Sort();
+
+            foreach (var noteWord in note)
+            {
+                var magWordgrp = magazine.Remove(noteWord);
+                if (!magWordgrp)
+                {
+                    Console.WriteLine("No");
+                    return;
+                }
+            }
+            Console.WriteLine("Yes");
+        }
+
+        public static long repeatedString(string s, long n)
+        {
+            int baseCount = s.Count(a => a == 'a');
+            double div = n / s.Length;
+            var multiple = Convert.ToInt64(Math.Truncate(div) * baseCount);
+
+            return multiple + s.Substring(0, Convert.ToInt32(n % s.Length)).Count(a => a == 'a');
         }
 
         public static void textEditer()

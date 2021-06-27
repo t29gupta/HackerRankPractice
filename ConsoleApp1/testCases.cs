@@ -66,5 +66,31 @@ namespace ConsoleApp1
                 return null;
             }
         }
+        
+        public Tuple<List<string>,List<string>> GetRansomTestCases()
+        {
+            try
+            {
+                using (StreamReader sr = new StreamReader(AppContext.BaseDirectory + "\\ransomNotetestCase.txt"))
+                {
+                    string[] firstMultipleInput = sr.ReadLine().TrimEnd().Split(' ');
+
+                    int m = Convert.ToInt32(firstMultipleInput[0]);
+
+                    int n = Convert.ToInt32(firstMultipleInput[1]);
+
+                    List<string> magazine = sr.ReadLine().TrimEnd().Split(' ').ToList();
+
+                    List<string> note = sr.ReadLine().TrimEnd().Split(' ').ToList();
+
+                    return new Tuple<List<string>, List<string>>(magazine, note);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
     }
 }
