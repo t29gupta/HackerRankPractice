@@ -75,10 +75,158 @@ namespace ConsoleApp1
             //var ts = new testCases().GetBribeTestCases();
             //minimumBribes(ts);
 
-            var ts = new testCases().GetRansomTestCases();
-            checkMagazine(ts.Item1, ts.Item2);
+            //var ts = new testCases().GetRansomTestCases();
+            //checkMagazine(ts.Item1, ts.Item2);
+
+            //var s = partitionList(new int[] { 1, 8, 3, 5, 2, 1, 9, 4, 5, 2, 0, 6, 7, 1 }, 5);
+
+            int[] testArr1 = { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
+            int[] testArr2 = { -9, -2, 1, 8, 7, -6, 4, 9, -9, -5, 0, 5, -2, 5, 9, 7 };
+            int[] testArr3 = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+        //var s = MaxSubArray(new int[] { -2, 1, -3, 4, -1, 2, 1, -5, 4 });
+        // s = MaxSubArray(new int[] { 5, 4, -1, 7, 8 });
+        //s = MaxSubArray(new int[] { -2,1 });
+        var s = MaxSubArray(testArr3);
+            
+            //var ss = MaxSubArray(new int[] { -1, -2 });
 
             Console.Read();
+        }
+
+        public static int MaxSubArray(int[] nums)
+        {
+            int maxSum = nums[0];
+            int runningSum = nums[0];
+            int lastCollectionSum = nums[0];
+
+            int currentSum = nums[0];
+
+            if (nums.Length == 1)
+            {
+                return maxSum;
+            }
+
+            for (int i = 1; i < nums.Length; i++)
+            {
+                if (nums[i] < 0)
+                {
+                    if (currentSum < 0)
+                    {
+                        if (currentSum < nums[i])
+                        {
+                            currentSum = nums[i];
+                            runningSum = nums[i];
+                        }
+                        continue;
+                    }
+
+
+                    if (Math.Abs(nums[i]) > currentSum)
+                    {
+                        maxSum = Math.Max(Math.Max(currentSum, runningSum), Math.Max(maxSum, lastCollectionSum));
+
+                        currentSum = 0;
+                        lastCollectionSum = 0;
+
+                        if (Math.Abs(nums[i]) > runningSum)
+                        {
+                            runningSum = 0;
+                        }
+                        else
+                        {
+                            runningSum += nums[i];
+                        }
+                    }
+                    else
+                    {
+                        maxSum = Math.Max(Math.Max(currentSum, runningSum), Math.Max(maxSum, lastCollectionSum));
+                        lastCollectionSum = currentSum;
+                        currentSum = 0;
+
+                        runningSum += nums[i];
+                    }
+                }
+                else if (nums[i] == 0 && currentSum < 0)
+                {
+                    currentSum = runningSum = 0;
+                }
+                else
+                {
+                    if (currentSum < 0)
+                    {
+                        currentSum = runningSum = 0;
+                    }
+
+                    currentSum += nums[i];
+                    runningSum += nums[i];
+                }
+            }
+
+            Console.WriteLine($"currentSum : {currentSum}\nrunningSum : {runningSum}\nmaxSum : {Math.Max(currentSum, Math.Max(maxSum, lastCollectionSum))}");
+
+            return Math.Max(Math.Max(currentSum, runningSum), Math.Max(maxSum, lastCollectionSum));
+        }
+
+        /// <summary>
+        /// Partition an arr by ant int k into |<k|=K|>K|
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public static int[] partitionList(int[] arr, int k)
+        {
+            List<int> midIndices = new List<int>();
+            int largInd = arr.Length - 1;
+
+            for (int smIndex = 0; smIndex < largInd;)
+            {
+                if (arr[smIndex] < k)
+                {
+                    smIndex++;
+                }
+                else if (arr[smIndex] == k)
+                {
+                    midIndices.Add(smIndex++);
+                }
+                else
+                {
+                    if (arr[largInd] <= k)
+                    {
+                        swap(arr, smIndex, largInd);
+                    }
+                    else
+                    {
+                        largInd--;
+                    }
+                }
+
+            }
+
+            if (midIndices.Any())
+            {
+                foreach (var idx in midIndices)
+                {
+
+                    while (arr[largInd] >= k)
+                    {
+                        largInd--;
+                    }
+
+                    if (largInd <= idx) { break; }
+
+                    swap(arr, idx, largInd);
+                }
+            }
+
+            Console.WriteLine("Sorted");
+            return arr;
+        }
+
+        public static void swap(int[] arr, int aInd, int bInd)
+        {
+            int t = arr[aInd];
+            arr[aInd] = arr[bInd];
+            arr[bInd] = t;
         }
 
         public static void checkMagazine(List<string> magazine, List<string> note)
