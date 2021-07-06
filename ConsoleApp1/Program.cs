@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HackerRankPractice;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -80,17 +81,438 @@ namespace ConsoleApp1
 
             //var s = partitionList(new int[] { 1, 8, 3, 5, 2, 1, 9, 4, 5, 2, 0, 6, 7, 1 }, 5);
 
-            int[] testArr1 = { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
-            int[] testArr2 = { -9, -2, 1, 8, 7, -6, 4, 9, -9, -5, 0, 5, -2, 5, 9, 7 };
-            int[] testArr3 = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
-        //var s = MaxSubArray(new int[] { -2, 1, -3, 4, -1, 2, 1, -5, 4 });
-        // s = MaxSubArray(new int[] { 5, 4, -1, 7, 8 });
-        //s = MaxSubArray(new int[] { -2,1 });
-        var s = MaxSubArray(testArr3);
-            
+            //int[] testArr1 = { 31, -41, 59, 26, -53, 58, 97, -93, -23, 84 };
+            //int[] testArr2 = { -9, -2, 1, 8, 7, -6, 4, 9, -9, -5, 0, 5, -2, 5, 9, 7 };
+            //int[] testArr3 = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+            //var s = MaxSubArray(new int[] { -2, 1, -3, 4, -1, 2, 1, -5, 4 });
+            // s = MaxSubArray(new int[] { 5, 4, -1, 7, 8 });
+            //s = MaxSubArray(new int[] { -2,1 });
+            //var s = MaxSubArray(testArr3);
+
             //var ss = MaxSubArray(new int[] { -1, -2 });
 
+            //var testCase = new List<long>() { 1, 3, 9, 9, 27, 27, 81 };
+            //testCase.Clear();
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    testCase.Add(1);
+            //}
+
+            //countTripletsLessComplexity(testCase, 3);
+
+            //var l1 = new int[] { 2, 4, 3 };
+            //var l2 = new int[] { 5, 6, 4 };
+            //ListNode ln = AddTwoNumbers(l1.CreateListNode(), l2.CreateListNode());
+
+            //var s = FindMedianSortedArrays(new int[] { 1, 2 }, new int[] { 3, 4 });
+
+            //var s = LongestPalindrome("abcda");
+
+            //var s = ConvertZigZag("A", 2);
+
+            //var i = Reverse(-2147483648);
+
+            var i = MyAtoi("        -42");
+
             Console.Read();
+        }
+
+        public static bool IsPalindrome(int x)
+        {
+            if (x < 0)
+            {
+                return false;
+            }
+
+            var temp = x.ToString();
+            //Console.WriteLine(temp);                    
+            //Console.WriteLine(temp.Reverse().ToArray());
+
+
+            return IsPalindrome(temp);
+        }
+
+        public static int MyAtoi(string s)
+        {
+            s = s.Trim();
+            if (s.Length == 0)
+            {
+                return 0;
+            }
+
+            long res = 0;
+
+            bool? sign = s[0] == '-' ? true : s[0] == '+' ? false : null;
+
+            for (int i = sign.HasValue ? 1 : 0; i < s.Length; i++)
+            {
+                if (res == 0 && s[i] == '0')
+                {
+                    continue;
+                }
+                else if (s[i] == '0' || s[i] == '1' || s[i] == '2' || s[i] == '3' || s[i] == '4' || s[i] == '5' || s[i] == '6' || s[i] == '7' || s[i] == '8' || s[i] == '9')
+                {
+                    res = res * 10 + int.Parse(s[i].ToString());
+                    if (res > int.MaxValue)
+                    {
+                        return sign.HasValue && sign.Value ? int.MinValue : int.MaxValue;
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return (int)(sign.HasValue && sign.Value ? -res : res);
+        }
+
+
+        public static int Reverse(int x)
+        {
+            string res = "";
+            long temp = x == int.MinValue ? int.MaxValue : Math.Abs(x);
+
+            while (temp > 0)
+            {
+                res += temp % 10;
+                temp /= 10;
+            }
+
+            if (Int32.TryParse(res, out int resInt))
+            {
+                if (x < 0)
+                {
+                    return -resInt;
+                }
+                else
+                {
+                    return resInt;
+                }
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static string ConvertZigZagBetter(string s, int numRows)
+        {
+            if (numRows == 1)
+            {
+                return s;
+            }
+
+            string[] zigZag = new string[numRows];
+
+            int rowCounter = 0;
+            int rowIncrement = 1;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                zigZag[rowCounter] += s[i];
+
+                rowCounter += rowIncrement;
+
+                if (rowCounter >= numRows - 1 || rowCounter == 0)
+                {
+                    rowIncrement *= -1;
+                }
+            }
+
+            StringBuilder res = new StringBuilder();
+
+            for (int i = 0; i < numRows; i++)
+            {
+                res.Append(zigZag[i]);
+            }
+
+            return res.ToString();
+        }
+
+        public static string ConvertZigZag(string s, int numRows)
+        {
+            int tempDiv = (int)(s.Length / numRows) + 1;
+            int tentativeColcount = tempDiv * numRows;
+            char[,] zigZag = new char[numRows, tentativeColcount];
+
+            int rowCounter = 0;
+            int colCounter = 0;
+            int rowIncrement = 1;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                zigZag[rowCounter, colCounter] = s[i];
+                rowCounter += rowIncrement;
+                if (rowCounter >= numRows - 1 || rowCounter == 0)
+                {
+                    rowIncrement *= -1;
+                    if (rowCounter > numRows - 1)
+                    {
+                        rowIncrement = 1;
+                        rowCounter--;
+                    }
+                    if (rowCounter == 0)
+                    {
+                        colCounter++;
+                    }
+                }
+                else if (rowIncrement < 0)
+                {
+                    colCounter++;
+                }
+            }
+
+            StringBuilder res = new StringBuilder();
+
+            for (int i = 0; i < numRows; i++)
+            {
+                for (int j = 0; j <= colCounter; j++)
+                {
+                    if (zigZag.GetLength(1) == j) { continue; }
+                    char sd = zigZag[i, j];
+                    res.Append(sd);
+                    Console.Write(sd == '\0' ? " " : sd);
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine(res.ToString().Trim());
+
+            return res.ToString().Trim();
+        }
+
+        public static string LongestPalindrome(string s)
+        {
+            if (s.Length == 1)
+            {
+                return s;
+            }
+
+            int maxCount = 0;
+            string resString = "";
+            int lstIndx;
+
+            for (int i = 0; i < s.Length; i++)
+            {
+                lstIndx = s.Length - 1;
+
+                if (lstIndx - i < maxCount)
+                {
+                    break;
+                }
+
+                while (lstIndx > i)
+                {
+                    lstIndx = s.LastIndexOf(s[i], lstIndx, lstIndx - i);
+                    if (i < lstIndx)
+                    {
+                        var tempString = s.Substring(i, lstIndx - i + 1);
+                        if (IsPalindrome(tempString))
+                        {
+                            if (tempString.Length >= maxCount)
+                            {
+                                resString = tempString;
+                                maxCount = tempString.Length;
+
+                                break;
+                            }
+                        }
+                    }
+                    lstIndx--;
+                }
+            }
+
+            return string.IsNullOrEmpty(resString) ? s[0].ToString() : resString;
+        }
+
+        private static bool IsPalindrome(string tempString)
+        {
+            for (int i = 0; i < tempString.Length / 2; i++)
+            {
+                if (tempString[i] != tempString[tempString.Length - i - 1])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public static double FindMedianSortedArrays(int[] nums1, int[] nums2)
+        {
+            var newArr = nums1.ToList();
+            newArr.AddRange(nums2);
+            newArr.Sort();
+
+            if (newArr.Count == 0)
+            {
+                return 0;
+            }
+            else if (newArr.Count == 1)
+            {
+                return newArr[0];
+            }
+
+            int med = newArr.Count / 2;
+
+            if (newArr.Count % 2 > 0)
+            {
+                return newArr[med];
+            }
+            else
+            {
+                return (newArr[med - 1] + newArr[med]) / 2D;
+            }
+
+        }
+
+        public static ListNode AddTwoNumbers(ListNode l1, ListNode l2)
+        {
+            int carry = 0;
+
+            List<int> res = new List<int>();
+
+            var currentl1 = l1;
+            var currentL2 = l2;
+            int tempSum;
+
+            while (currentl1 != null || currentL2 != null)
+            {
+                tempSum = (currentl1 != null ? currentl1.val : 0) + (currentL2 != null ? currentL2.val : 0) + carry;
+
+                carry = tempSum / 10;
+                currentl1 = currentl1?.next;
+                currentL2 = currentL2?.next;
+
+                res.Add(tempSum % 10);
+            }
+
+            if (carry != 0)
+            {
+                res.Add(carry);
+            }
+
+            return res.ToArray().CreateListNode();
+
+        }
+
+        public static int[] TwoSum(int[] nums, int target)
+        {
+            for (int i = 0; i < nums.Length - 1; i++)
+            {
+                for (int j = i + 1; j < nums.Length; j++)
+                {
+                    if (nums[i] + nums[j] == target)
+                    {
+                        return new int[] { i, j };
+                    }
+                }
+            }
+
+            return new int[2];
+        }
+
+
+        /// <summary>
+        /// Unsolved due to timeout
+        /// </summary>
+        /// <param name="arr"></param>
+        /// <param name="r"></param>
+        /// <returns></returns>
+        static long countTripletsLessComplexity(List<long> arr, long r)
+        {
+            int tripletCount = 0;
+
+            int t2Count = 0;
+            int t3Count = 0;
+
+            for (int i = 1; i < arr.Count - 1; i++)
+            {
+                long r1 = arr[i] / r;
+                long r3 = arr[i] * r;
+
+                t2Count = GetCount(arr, i, r1);
+                t3Count = GetCount(arr, i, r3, false);
+
+                tripletCount += t2Count * t3Count;
+            }
+
+            return tripletCount;
+        }
+
+        static int GetCount(List<long> arr, int currentIndex, long val, bool left = true)
+        {
+            int resCount = 0;
+
+            if (left)
+            {
+                for (int i = currentIndex - 1; i >= 0; i--)
+                {
+                    if (arr[i] < val)
+                    {
+                        break;
+                    }
+                    else if (arr[i] == val)
+                    {
+                        resCount++;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = currentIndex + 1; i < arr.Count; i++)
+                {
+                    if (arr[i] > val)
+                    {
+                        break;
+                    }
+                    else if (arr[i] == val)
+                    {
+                        resCount++;
+                    }
+                }
+            }
+            return resCount;
+        }
+
+        static long countTriplets(List<long> arr, long r)
+        {
+            int tripletCount = 0;
+
+            List<(int, int, int)> tripletCollection = new List<(int, int, int)>();
+
+            int ind1 = 0, ind2 = 0, ind3 = 0;
+
+            for (int i = 0; i < arr.Count; i++)
+            {
+                ind1 = i;
+
+                if (i < arr.Count - 1)
+                {
+                    for (int j = i + 1; j < arr.Count; j++)
+                    {
+                        if (arr[j] == arr[i] * r)
+                        {
+                            ind2 = j;
+
+                            if (j < arr.Count - 1)
+                            {
+                                for (int k = j + 1; k < arr.Count; k++)
+                                {
+                                    if (arr[k] == arr[j] * r)
+                                    {
+                                        ind3 = k;
+
+                                        tripletCount++;
+                                        tripletCollection.Add((ind1, ind2, ind3));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return tripletCount;
         }
 
         public static int MaxSubArray(int[] nums)
